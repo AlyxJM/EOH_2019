@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private Button play, stop, record;
-    private MediaRecorder myAudioRecorder;
+    //private MediaRecorder myAudioRecorder;
     private String outputFile;
 
     @Override
@@ -25,15 +25,19 @@ public class MainActivity extends AppCompatActivity {
         stop.setEnabled(false);
         play.setEnabled(false);
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
+
+        /*
         myAudioRecorder = new MediaRecorder();
         myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         myAudioRecorder.setOutputFile(outputFile);
+        */
 
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 try {
                     myAudioRecorder.prepare();
                     myAudioRecorder.start();
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException ioe) {
                     // make something
                 }
+                */
                 record.setEnabled(false);
                 stop.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
@@ -51,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myAudioRecorder.stop();
-                myAudioRecorder.release();
-                myAudioRecorder = null;
+                //myAudioRecorder.stop();
+                //myAudioRecorder.release();
+                //myAudioRecorder = null;
                 record.setEnabled(true);
                 stop.setEnabled(false);
                 play.setEnabled(true);
