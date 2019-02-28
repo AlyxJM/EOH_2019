@@ -6,10 +6,12 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="@drawable/gradient"
     tools:context=".MainActivity">
 
     <com.chibde.visualizer.CircleBarVisualizer
         android:id="@+id/circleBarVisualizer"
+        android:background="@drawable/gradient"
         android:layout_width="match_parent"
         android:layout_height="358dp"
         android:layout_marginTop="8dp"
@@ -19,18 +21,21 @@
         android:id="@+id/play"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/buttonColor"
         android:text="Play" />
 
     <Button
         android:id="@+id/record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/buttonColor"
         android:text="Record" />
 
     <Button
         android:id="@+id/stop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/buttonColor"
         android:text="Stop" />
 
 </LinearLayout>
