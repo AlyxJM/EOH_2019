@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.chibde.visualizer.CircleBarVisualizer;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button stopButton;
     private Button recordButton;
 
-    //private MediaRecorder myAudioRecorder;
+    private MediaRecorder myAudioRecorder;
     private String outputFile;
 
 
@@ -42,23 +45,21 @@ public class MainActivity extends AppCompatActivity {
 
         askPermission();
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.thank_you_next);
         circleBarVisualizer = findViewById(R.id.circleBarVisualizer);
         circleBarVisualizerRecord = findViewById(R.id.circleBarVisualizerRecord);
 
-        /*
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
         myAudioRecorder = new MediaRecorder();
         myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         myAudioRecorder.setOutputFile(outputFile);
-        */
 
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
+                    mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.sia_chandelier);
                     mediaPlayer.start();
                     Toast.makeText(getApplicationContext(), "Playing Audio",
                             Toast.LENGTH_LONG).show();
@@ -80,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
                 try {
                     myAudioRecorder.prepare();
                     myAudioRecorder.start();
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException ioe) {
                     // make something
                 }
-                */
                 recordButton.setEnabled(false);
                 stopButton.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
