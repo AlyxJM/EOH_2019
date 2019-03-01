@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
     private CircleBarVisualizer circleBarVisualizer;
+    private CircleBarVisualizer circleBarVisualizerRecord;
 
     private Button playButton;
     private Button stopButton;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         mediaPlayer = MediaPlayer.create(this, R.raw.thank_you_next);
         circleBarVisualizer = findViewById(R.id.circleBarVisualizer);
+        circleBarVisualizerRecord = findViewById(R.id.circleBarVisualizerRecord);
 
         /*
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
                     circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
                             R.color.colorPrimary));
+                    circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
+                            R.color.colorAccent));
                     circleBarVisualizer.setPlayer(mediaPlayer.getAudioSessionId());
 
                     playButton.setEnabled(false);
