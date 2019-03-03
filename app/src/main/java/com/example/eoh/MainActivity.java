@@ -116,17 +116,21 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                karaokeTrackPlayer.stop();
-                recordingPlayer.stop();
+                try {
+                    karaokeTrackPlayer.stop();
+                    recordingPlayer.stop();
 
-                myAudioRecorder.stop();
-                myAudioRecorder.release();
-                myAudioRecorder = null;
+                    myAudioRecorder.stop();
+                    myAudioRecorder.release();
+                    myAudioRecorder = null;
 
-                recordButton.setEnabled(true);
-                stopButton.setEnabled(false);
-                playButton.setEnabled(true);
-                Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
+                    recordButton.setEnabled(true);
+                    stopButton.setEnabled(false);
+                    playButton.setEnabled(true);
+                    Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Stop Failed", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -144,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
                     //Recording
 
-                    recordingPlayer = MediaPlayer.create(MainActivity.this, R.raw.thank_you_next);
+                    recordingPlayer.setDataSource(outputFile);
+                    recordingPlayer.prepare();
                     recordingPlayer.start();
 
                     circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
@@ -156,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     stopButton.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "Playback", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
-                    // make something
+                    Toast.makeText(getApplicationContext(), "Playback Failed", Toast.LENGTH_LONG).show();
                 }
             }
         });
