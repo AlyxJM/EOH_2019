@@ -46,27 +46,35 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/play"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/buttonColor"
-        android:text="Play" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/record"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/buttonColor"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="Record" />
+        <ImageButton
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="51dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@android:drawable/ic_media_play" />
 
-    <Button
-        android:id="@+id/stop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/buttonColor"
-        android:text="Stop" />
+        <ImageButton
+            android:id="@+id/record"
+            android:layout_width="wrap_content"
+            android:layout_height="51dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@android:drawable/ic_media_pause" />
+
+        <ImageButton
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="51dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@android:drawable/ic_notification_overlay" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
