@@ -20,7 +20,9 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer karaokeTrackPlayer;
+    private MediaPlayer recordingPlayer;
+
     private CircleBarVisualizer circleBarVisualizer;
     private CircleBarVisualizer circleBarVisualizerRecord;
 
@@ -59,19 +61,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.sia_chandelier);
-                    mediaPlayer.start();
-                    Toast.makeText(getApplicationContext(), "Playing Audio",
-                            Toast.LENGTH_LONG).show();
+                    //Karaoke Track
+                    karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.sia_chandelier);
+                    karaokeTrackPlayer.start();
 
                     circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
                             R.color.colorPrimary));
+                    circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
+
+                    //Recording
+
+                    recordingPlayer = MediaPlayer.create(MainActivity.this, R.raw.thank_you_next);
+                    recordingPlayer.start();
+
                     circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
                             R.color.colorAccent));
-                    circleBarVisualizer.setPlayer(mediaPlayer.getAudioSessionId());
+                    circleBarVisualizerRecord.setPlayer(recordingPlayer.getAudioSessionId());
 
                     playButton.setEnabled(false);
+                    recordButton.setEnabled(true);
                     stopButton.setEnabled(true);
+                    Toast.makeText(getApplicationContext(), "Playing Audio", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     // make something
                 }
@@ -90,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     // make something
                 }
                 recordButton.setEnabled(false);
+                playButton.setEnabled(false);
                 stopButton.setEnabled(true);
                 Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
             }
@@ -98,16 +109,17 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer.stop();
-                Toast.makeText(getApplicationContext(), "Audio recorded successfully",
-                        Toast.LENGTH_LONG).show();
+                karaokeTrackPlayer.stop();
+                recordingPlayer.stop();
 
                 //myAudioRecorder.stop();
                 //myAudioRecorder.release();
                 //myAudioRecorder = null;
+
                 recordButton.setEnabled(true);
                 stopButton.setEnabled(false);
                 playButton.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
             }
         });
     }
