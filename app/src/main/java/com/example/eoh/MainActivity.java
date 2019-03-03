@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,40 +86,18 @@ public class MainActivity extends AppCompatActivity {
         myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         myAudioRecorder.setOutputFile(outputFile);
 
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    //Karaoke Track
-                    karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
-                    karaokeTrackPlayer.start();
-
-                    circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
-                            R.color.colorPrimary));
-                    circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
-
-                    //Recording
-
-                    recordingPlayer = MediaPlayer.create(MainActivity.this, R.raw.thank_you_next);
-                    recordingPlayer.start();
-
-                    circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
-                            R.color.colorAccent));
-                    circleBarVisualizerRecord.setPlayer(recordingPlayer.getAudioSessionId());
-
-                    playButton.setEnabled(false);
-                    recordButton.setEnabled(true);
-                    stopButton.setEnabled(true);
-                    Toast.makeText(getApplicationContext(), "Playing Audio", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    // make something
-                }
-            }
-        });
-
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Karaoke Track
+                karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
+                karaokeTrackPlayer.start();
+
+                circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
+                        R.color.colorPrimary));
+                circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
+
+
                 try {
                     myAudioRecorder.prepare();
                     myAudioRecorder.start();
@@ -152,6 +129,38 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
             }
         });
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    //Karaoke Track
+                    karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
+                    karaokeTrackPlayer.start();
+
+                    circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
+                            R.color.colorPrimary));
+                    circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
+
+                    //Recording
+
+                    recordingPlayer = MediaPlayer.create(MainActivity.this, R.raw.thank_you_next);
+                    recordingPlayer.start();
+
+                    circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
+                            R.color.colorAccent));
+                    circleBarVisualizerRecord.setPlayer(recordingPlayer.getAudioSessionId());
+
+                    playButton.setEnabled(false);
+                    recordButton.setEnabled(true);
+                    stopButton.setEnabled(true);
+                    Toast.makeText(getApplicationContext(), "Playback", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    // make something
+                }
+            }
+        });
+
     }
 
     private void askPermission() {
