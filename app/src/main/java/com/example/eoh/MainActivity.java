@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+
                     //Karaoke Track
                     karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
                     karaokeTrackPlayer.start();
@@ -99,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
                     //Recording
 
-                    recordingPlayer = MediaPlayer.create(MainActivity.this, R.raw.thank_you_next);
+                    recordingPlayer.setDataSource(outputFile);
+                    recordingPlayer.prepare();
                     recordingPlayer.start();
 
                     circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
@@ -140,9 +142,9 @@ public class MainActivity extends AppCompatActivity {
                 karaokeTrackPlayer.stop();
                 recordingPlayer.stop();
 
-                //myAudioRecorder.stop();
-                //myAudioRecorder.release();
-                //myAudioRecorder = null;
+                myAudioRecorder.stop();
+                myAudioRecorder.release();
+                myAudioRecorder = null;
 
                 recordButton.setEnabled(true);
                 stopButton.setEnabled(false);
