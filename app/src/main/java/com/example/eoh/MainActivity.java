@@ -4,27 +4,50 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.chibde.visualizer.CircleBarVisualizer;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    private static final int MY_PERMISSIONS_REQUEST_INTERNET = 2;
 
     private MediaPlayer karaokeTrackPlayer;
     private MediaPlayer recordingPlayer;
 
     private CircleBarVisualizer circleBarVisualizer;
     private CircleBarVisualizer circleBarVisualizerRecord;
+
+
+    // Default logging tag for messages from the main activity
+    private static final String TAG = "EOH: Main";
+    // Request queue for our network requests
+    private static RequestQueue requestQueue;
+    private int numRequests = 0;
+
+    private TextView lyricsTextView;
 
     private Button playButton;
     private Button stopButton;
@@ -50,6 +73,11 @@ public class MainActivity extends AppCompatActivity {
         circleBarVisualizer = findViewById(R.id.circleBarVisualizer);
         circleBarVisualizerRecord = findViewById(R.id.circleBarVisualizerRecord);
 
+        // Set up a queue for our Volley requests
+        requestQueue = Volley.newRequestQueue(this);
+        lyricsTextView = findViewById(R.id.lyricTextView);
+        startLyricsApiCall();
+
         outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
         myAudioRecorder = new MediaRecorder();
         myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -62,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     //Karaoke Track
-                    karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.sia_chandelier);
+                    karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
                     karaokeTrackPlayer.start();
 
                     circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
@@ -140,6 +168,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.INTERNET)) {
+                // Show an explanation to the user about permission
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.INTERNET},
+                        MY_PERMISSIONS_REQUEST_INTERNET);
+
+            }
+        }
     }
 
     @Override
@@ -156,6 +199,50 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
             }
+            case MY_PERMISSIONS_REQUEST_INTERNET: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied                }
+                    return;
+                }
+            }
+        }
+    }
+
+    private void startLyricsApiCall() {
+        try {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    "https://api.lyrics.ovh/v1/sia/chandelier",
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(final JSONObject response) {
+                            Log.d(TAG, response.toString());
+                            try {
+                                if (response.get("lyrics").toString().equals("No lyrics found") && numRequests < 5) {
+                                    numRequests++;
+                                    startLyricsApiCall();
+                                } else {
+                                    lyricsTextView.setText(response.get("lyrics").toString());
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Problem parsing JSON", e);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(final VolleyError error) {
+                    Log.w(TAG, error.toString());
+                }
+            }) {
+            };
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

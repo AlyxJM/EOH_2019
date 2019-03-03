@@ -22,7 +22,7 @@
             <com.chibde.visualizer.CircleBarVisualizer
                 android:id="@+id/circleBarVisualizer"
                 android:layout_width="match_parent"
-                android:layout_height="375dp"
+                android:layout_height="300dp"
                 android:background="@drawable/gradient"
                 tools:layout_editor_absoluteY="8dp" />
         </LinearLayout>
@@ -35,7 +35,7 @@
             <com.chibde.visualizer.CircleBarVisualizer
                 android:id="@+id/circleBarVisualizerRecord"
                 android:layout_width="0dp"
-                android:layout_height="375dp"
+                android:layout_height="300dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -67,5 +67,22 @@
         android:layout_height="wrap_content"
         android:background="@color/buttonColor"
         android:text="Stop" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:soundEffectsEnabled="false">
+
+        <TextView
+            android:id="@+id/lyricTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="clip_vertical|center_horizontal"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:scrollHorizontally="false"
+            android:visibility="visible" />
+    </ScrollView>
 
 </LinearLayout>
