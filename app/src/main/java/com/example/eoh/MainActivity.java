@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private static final int MY_PERMISSIONS_REQUEST_INTERNET = 2;
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 3;
 
     private MediaPlayer karaokeTrackPlayer;
     private MediaPlayer recordingPlayer;
@@ -49,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView lyricsTextView;
 
-    private Button playButton;
-    private Button stopButton;
-    private Button recordButton;
+    private ImageButton playButton;
+    private ImageButton stopButton;
+    private ImageButton recordButton;
 
     private MediaRecorder myAudioRecorder;
     private String outputFile;
@@ -202,6 +204,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             case MY_PERMISSIONS_REQUEST_INTERNET: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied                }
+                    return;
+                }
+            }
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
