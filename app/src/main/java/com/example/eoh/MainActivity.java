@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
                     myAudioRecorder.prepare();
                     myAudioRecorder.start();
                 } catch (IllegalStateException ise) {
-                    // make something ...
+                    Toast.makeText(getApplicationContext(), "Recording Failed: IllegalStateException ise", Toast.LENGTH_LONG).show();
                 } catch (IOException ioe) {
-                    // make something
+                    Toast.makeText(getApplicationContext(), "Recording Failed: IOException ioe", Toast.LENGTH_LONG).show();
                 }
                 recordButton.setEnabled(false);
                 playButton.setEnabled(false);
@@ -119,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 karaokeTrackPlayer.stop();
                 recordingPlayer.stop();
 
-                //myAudioRecorder.stop();
-                //myAudioRecorder.release();
-                //myAudioRecorder = null;
+                myAudioRecorder.stop();
+                myAudioRecorder.release();
+                myAudioRecorder = null;
 
                 recordButton.setEnabled(true);
                 stopButton.setEnabled(false);
