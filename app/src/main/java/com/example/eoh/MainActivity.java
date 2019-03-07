@@ -296,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(final JSONObject response) {
-                            Log.d(TAG, response.toString());
                             try {
                                 if (response.get("lyrics").toString().equals("No lyrics found") && numRequests < 10) {
                                     numRequests++;
