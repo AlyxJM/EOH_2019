@@ -34,9 +34,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     private static final int MY_PERMISSIONS_REQUEST_INTERNET = 2;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 3;
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 4;
 
     private MediaPlayer karaokeTrackPlayer;
-    private MediaPlayer recordingPlayer;
+    private MediaPlayer recordingPlayer = new MediaPlayer();
 
     private CircleBarVisualizer circleBarVisualizer;
     private CircleBarVisualizer circleBarVisualizerRecord;
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 recordButton.setEnabled(false);
                 playButton.setEnabled(false);
                 stopButton.setEnabled(true);
+
                 Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
             }
         });
@@ -117,8 +119,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    karaokeTrackPlayer.stop();
-                    recordingPlayer.stop();
+                    if (karaokeTrackPlayer != null) {
+                        karaokeTrackPlayer.stop();
+                    } else if (recordingPlayer != null) {
+                        recordingPlayer.stop();
+                    }
 
                     myAudioRecorder.stop();
                     myAudioRecorder.release();
@@ -130,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Stop Failed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
             }
         });
@@ -199,6 +205,38 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // Show an explanation to the user about permission
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Permission is not granted
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show an explanation to the user about permission
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+            }
+        }
     }
 
     @Override
@@ -211,9 +249,9 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    // permission denied                }
-                    return;
+                    Toast.makeText(getApplicationContext(), "Record Audio Permission Denied", Toast.LENGTH_LONG).show();
                 }
+                return;
             }
             case MY_PERMISSIONS_REQUEST_INTERNET: {
                 // If request is cancelled, the result arrays are empty.
@@ -221,9 +259,9 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    // permission denied                }
-                    return;
+                    Toast.makeText(getApplicationContext(), "Internet Permission Denied", Toast.LENGTH_LONG).show();
                 }
+                return;
             }
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
@@ -231,9 +269,20 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    // permission denied                }
-                    return;
+                    Toast.makeText(getApplicationContext(), "Write External Storage Permission Denied", Toast.LENGTH_LONG).show();
                 }
+
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Read External Storage Permission Denied", Toast.LENGTH_LONG).show();
+                }
+                return;
             }
         }
     }
@@ -249,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(final JSONObject response) {
                             Log.d(TAG, response.toString());
                             try {
-                                if (response.get("lyrics").toString().equals("No lyrics found") && numRequests < 5) {
+                                if (response.get("lyrics").toString().equals("No lyrics found") && numRequests < 10) {
                                     numRequests++;
                                     startLyricsApiCall();
                                 } else {
