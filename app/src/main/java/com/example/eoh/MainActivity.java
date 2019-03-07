@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private int numRequests = 0;
 
     private MediaPlayer karaokeTrackPlayer;
-    private MediaPlayer recordingPlayer = new MediaPlayer();
+    private MediaPlayer recordingPlayer;
 
     private CircleBarVisualizer circleBarVisualizer;
     private CircleBarVisualizer circleBarVisualizerRecord;
@@ -92,15 +92,20 @@ public class MainActivity extends AppCompatActivity {
                     myAudioRecorder.start();
                     isRecording = true;
                 } catch (IllegalStateException ise) {
-                    Toast.makeText(getApplicationContext(), "Recording Failed: IllegalStateException ise", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Recording Failed: IllegalStateException ise",
+                            Toast.LENGTH_LONG).show();
+
                 } catch (IOException ioe) {
-                    Toast.makeText(getApplicationContext(), "Recording Failed: IOException ioe", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Recording Failed: IOException ioe", Toast.LENGTH_LONG).show();
                 }
                 recordButton.setEnabled(false);
                 playButton.setEnabled(false);
                 stopButton.setEnabled(true);
 
-                Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Recording started",
+                        Toast.LENGTH_LONG).show();
             }
         });
 
@@ -120,13 +125,18 @@ public class MainActivity extends AppCompatActivity {
                         myAudioRecorder.stop();
                         myAudioRecorder.release();
                         myAudioRecorder = null;
+
+                        Toast.makeText(getApplicationContext(), "Audio recorded successfully",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Playback stopped",
+                                Toast.LENGTH_LONG).show();
                     }
 
                     recordButton.setEnabled(true);
                     stopButton.setEnabled(false);
                     playButton.setEnabled(true);
 
-                    Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Stop Failed", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -142,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
                     karaokeTrackSetUp();
 
+                    recordingPlayer = new MediaPlayer();
                     recordingPlayer.setDataSource(outputFile);
                     recordingPlayer.prepare();
                     recordingPlayer.start();
@@ -156,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Playback", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Playback Failed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
                 }
             }
         });
@@ -193,7 +205,8 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Record Audio Permission Denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Record Audio Permission Denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -203,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Internet Permission Denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Internet Permission Denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -213,7 +227,8 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Write External Storage Permission Denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Write External Storage Permission Denied", Toast.LENGTH_LONG).show();
                 }
 
                 return;
@@ -224,7 +239,8 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Read External Storage Permission Denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Read External Storage Permission Denied", Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -241,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(final JSONObject response) {
                             try {
-                                if (response.get("lyrics").toString().equals("No lyrics found") && numRequests < 10) {
+                                if (response.get("lyrics").toString().equals("No lyrics found")
+                                        && numRequests < 10) {
                                     numRequests++;
                                     startLyricsApiCall();
                                 } else {
