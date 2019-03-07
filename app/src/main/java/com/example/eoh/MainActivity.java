@@ -36,18 +36,17 @@ public class MainActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 3;
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 4;
 
-    private MediaPlayer karaokeTrackPlayer;
-    private MediaPlayer recordingPlayer = new MediaPlayer();
-
-    private CircleBarVisualizer circleBarVisualizer;
-    private CircleBarVisualizer circleBarVisualizerRecord;
-
-
     // Default logging tag for messages from the main activity
     private static final String TAG = "EOH: Main";
     // Request queue for our network requests
     private static RequestQueue requestQueue;
     private int numRequests = 0;
+
+    private MediaPlayer karaokeTrackPlayer;
+    private MediaPlayer recordingPlayer = new MediaPlayer();
+
+    private CircleBarVisualizer circleBarVisualizer;
+    private CircleBarVisualizer circleBarVisualizerRecord;
 
     private TextView lyricsTextView;
 
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaRecorder myAudioRecorder;
     private String outputFile;
 
+    private boolean isRecording = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         stopButton.setEnabled(false);
 
-        askPermission();
+        askAllPermissions();
 
         circleBarVisualizer = findViewById(R.id.circleBarVisualizer);
         circleBarVisualizerRecord = findViewById(R.id.circleBarVisualizerRecord);
@@ -80,28 +80,17 @@ public class MainActivity extends AppCompatActivity {
         lyricsTextView = findViewById(R.id.lyricTextView);
         startLyricsApiCall();
 
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
-        myAudioRecorder = new MediaRecorder();
-        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        myAudioRecorder.setOutputFile(outputFile);
-
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Karaoke Track
-                karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
-                karaokeTrackPlayer.start();
 
-                circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
-                        R.color.colorPrimary));
-                circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
-
+                audioRecorderSetUp();
+                karaokeTrackSetUp();
 
                 try {
                     myAudioRecorder.prepare();
                     myAudioRecorder.start();
+                    isRecording = true;
                 } catch (IllegalStateException ise) {
                     Toast.makeText(getApplicationContext(), "Recording Failed: IllegalStateException ise", Toast.LENGTH_LONG).show();
                 } catch (IOException ioe) {
@@ -121,17 +110,22 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     if (karaokeTrackPlayer != null) {
                         karaokeTrackPlayer.stop();
-                    } else if (recordingPlayer != null) {
+                    }
+
+                    if (recordingPlayer != null) {
                         recordingPlayer.stop();
                     }
 
-                    myAudioRecorder.stop();
-                    myAudioRecorder.release();
-                    myAudioRecorder = null;
+                    if (isRecording) {
+                        myAudioRecorder.stop();
+                        myAudioRecorder.release();
+                        myAudioRecorder = null;
+                    }
 
                     recordButton.setEnabled(true);
                     stopButton.setEnabled(false);
                     playButton.setEnabled(true);
+
                     Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), "Stop Failed", Toast.LENGTH_LONG).show();
@@ -144,15 +138,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    //Karaoke Track
-                    karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
-                    karaokeTrackPlayer.start();
+                    isRecording = false;
 
-                    circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
-                            R.color.colorPrimary));
-                    circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
-
-                    //Recording
+                    karaokeTrackSetUp();
 
                     recordingPlayer.setDataSource(outputFile);
                     recordingPlayer.prepare();
@@ -171,69 +159,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
-    private void askPermission() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+    private void askAllPermissions() {
+        askSinglePermission(Manifest.permission.RECORD_AUDIO, MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+        askSinglePermission(Manifest.permission.INTERNET, MY_PERMISSIONS_REQUEST_INTERNET);
+        askSinglePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        askSinglePermission(Manifest.permission.READ_EXTERNAL_STORAGE, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+    }
+
+    private void askSinglePermission(String permission, int requestCode) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
 
             // Permission is not granted
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.RECORD_AUDIO)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permission)) {
                 // Show an explanation to the user about permission
             } else {
                 // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.RECORD_AUDIO},
-                        MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
-
-            }
-        }
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.INTERNET)) {
-                // Show an explanation to the user about permission
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.INTERNET},
-                        MY_PERMISSIONS_REQUEST_INTERNET);
-
-            }
-        }
-
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user about permission
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-
-            }
-        }
-
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user about permission
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                        new String[]{permission}, requestCode);
 
             }
         }
@@ -318,5 +262,23 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void audioRecorderSetUp() {
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
+        myAudioRecorder = new MediaRecorder();
+        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        myAudioRecorder.setOutputFile(outputFile);
+    }
+
+    private void karaokeTrackSetUp() {
+        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
+        karaokeTrackPlayer.start();
+
+        circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
+                R.color.colorPrimary));
+        circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
     }
 }
