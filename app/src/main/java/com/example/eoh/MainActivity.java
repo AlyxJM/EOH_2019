@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private static RequestQueue requestQueue;
     private int numRequests = 0;
 
-    private MediaPlayer karaokeTrackPlayer;
-    private MediaPlayer recordingPlayer;
+   // private MediaPlayer karaokeTrackPlayer;
+  //  private MediaPlayer recordingPlayer;
 
     private CircleBarVisualizer circleBarVisualizer;
     private CircleBarVisualizer circleBarVisualizerRecord;
@@ -114,12 +114,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    if (karaokeTrackPlayer != null) {
-                        karaokeTrackPlayer.stop();
+                    if (SongMenu.trackPlayer != null) {
+                        SongMenu.trackPlayer.stop();
                     }
 
-                    if (recordingPlayer != null) {
-                        recordingPlayer.stop();
+                    if (SongMenu.recordingPlayer != null) {
+                        SongMenu.recordingPlayer.stop();
                     }
 
                     if (isRecording) {
@@ -159,14 +159,14 @@ public class MainActivity extends AppCompatActivity {
                     }, 2 * 1000);
 
 
-                    recordingPlayer = new MediaPlayer();
-                    recordingPlayer.setDataSource(outputFile);
-                    recordingPlayer.prepare();
-                    recordingPlayer.start();
+                    SongMenu.recordingPlayer = new MediaPlayer();
+                    SongMenu.recordingPlayer.setDataSource(outputFile);
+                    SongMenu.recordingPlayer.prepare();
+                    SongMenu.recordingPlayer.start();
 
                     circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
                             R.color.colorAccent));
-                    circleBarVisualizerRecord.setPlayer(recordingPlayer.getAudioSessionId());
+                    circleBarVisualizerRecord.setPlayer(SongMenu.recordingPlayer.getAudioSessionId());
 
                     playButton.setEnabled(false);
                     recordButton.setEnabled(true);
@@ -298,12 +298,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void karaokeTrackSetUp(float leftVolume, float rightVolume) {
-        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, SongMenu.getResid());
-        karaokeTrackPlayer.setVolume(leftVolume, rightVolume);
-        karaokeTrackPlayer.start();
+        SongMenu.trackPlayer = MediaPlayer.create(MainActivity.this, SongMenu.getResid());
+        SongMenu.trackPlayer.setVolume(leftVolume, rightVolume);
+        SongMenu.trackPlayer.start();
 
         circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
                 R.color.colorPrimary));
-        circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
+        circleBarVisualizer.setPlayer(SongMenu.trackPlayer.getAudioSessionId());
     }
 }

@@ -12,11 +12,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.widget.TextView;
 
 public class SongMenu extends AppCompatActivity {
     private static String songURL;
     private static int resid;
+
+    public static MediaPlayer trackPlayer;
+    public static MediaPlayer recordingPlayer;
 
     private Context context = this;
 
@@ -46,6 +51,8 @@ public class SongMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_menu);
 
+        //trackPlayer.reset();
+        //recordingPlayer.reset();
         //listFont = (Typeface) Typeface.createFromAsset(getAssets(), String.valueOf(R.font.Amatic_Bold));
 
 //        initializeList();
@@ -71,6 +78,8 @@ public class SongMenu extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (trackPlayer != null) trackPlayer.reset();
+                if (recordingPlayer != null) recordingPlayer.reset();
                 songURL = "https://api.lyrics.ovh/v1/" + artists[i] + "/" + songNamesArray[i];
                 resid = residIDS[i];
                 Intent intent = new Intent(context, MainActivity.class);
@@ -80,6 +89,14 @@ public class SongMenu extends AppCompatActivity {
         // Register the ListView  for Context menu
         //registerForContextMenu(listView);
     }
+
+//    public static MediaPlayer getTrackPlayer() {
+//        return trackPlayer;
+//    }
+//
+//    public static MediaPlayer getRecordingPlayer() {
+//        return recordingPlayer;
+//    }
 
     public static int getResid() {
         return resid;
