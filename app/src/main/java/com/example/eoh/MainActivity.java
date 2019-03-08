@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    "https://api.lyrics.ovh/v1/sia/chandelier",
+                    SongMenu.getURL(),
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void karaokeTrackSetUp(float leftVolume, float rightVolume) {
-        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
+        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, SongMenu.getResid());
         karaokeTrackPlayer.setVolume(leftVolume, rightVolume);
         karaokeTrackPlayer.start();
 
