@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 audioRecorderSetUp();
-                karaokeTrackSetUp();
+                karaokeTrackSetUp(.5f, .5f);
 
                 try {
                     myAudioRecorder.prepare();
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     isRecording = false;
 
-                    karaokeTrackSetUp();
+                    karaokeTrackSetUp(.4f,.4f);
 
                     recordingPlayer = new MediaPlayer();
                     recordingPlayer.setDataSource(outputFile);
@@ -290,9 +290,12 @@ public class MainActivity extends AppCompatActivity {
         myAudioRecorder.setOutputFile(outputFile);
     }
 
-    private void karaokeTrackSetUp() {
+    private void karaokeTrackSetUp(float leftVolume, float rightVolume) {
         karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
+        karaokeTrackPlayer.setVolume(leftVolume, rightVolume);
         karaokeTrackPlayer.start();
+
+
 
         circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
                 R.color.colorPrimary));
