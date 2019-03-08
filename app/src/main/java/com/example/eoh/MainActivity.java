@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 audioRecorderSetUp();
-                karaokeTrackSetUp(.5f, .5f);
+                karaokeTrackSetUp();
 
                 try {
                     myAudioRecorder.prepare();
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     isRecording = false;
 
-                    karaokeTrackSetUp(.4f,.4f);
+                    karaokeTrackSetUp();
 
                     recordingPlayer = new MediaPlayer();
                     recordingPlayer.setDataSource(outputFile);
@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    SongMenu.getURL(),
+                    "https://api.lyrics.ovh/v1/sia/chandelier",
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -290,12 +290,9 @@ public class MainActivity extends AppCompatActivity {
         myAudioRecorder.setOutputFile(outputFile);
     }
 
-    private void karaokeTrackSetUp(float leftVolume, float rightVolume) {
-        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, SongMenu.getResid());
-        karaokeTrackPlayer.setVolume(leftVolume, rightVolume);
+    private void karaokeTrackSetUp() {
+        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
         karaokeTrackPlayer.start();
-
-
 
         circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
                 R.color.colorPrimary));
