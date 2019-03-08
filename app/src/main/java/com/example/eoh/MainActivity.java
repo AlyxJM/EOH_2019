@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         recordButton = findViewById(R.id.record);
 
         stopButton.setEnabled(false);
+        playButton.setEnabled(false);
 
         askAllPermissions();
 
