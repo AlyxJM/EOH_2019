@@ -251,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    "https://api.lyrics.ovh/v1/Steve%20Aoki/Waste%20It%20On%20Me",
+                    "https://api.lyrics.ovh/v1/sia/chandelier",
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -291,12 +291,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void karaokeTrackSetUp() {
-        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.waste_it_on_me);
+        karaokeTrackPlayer = MediaPlayer.create(MainActivity.this, R.raw.chandelier);
         karaokeTrackPlayer.start();
 
         circleBarVisualizer.setColor(ContextCompat.getColor(MainActivity.this,
                 R.color.colorPrimary));
         circleBarVisualizer.setPlayer(karaokeTrackPlayer.getAudioSessionId());
     }
-
 }
