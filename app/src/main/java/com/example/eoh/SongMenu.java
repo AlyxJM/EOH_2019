@@ -18,7 +18,8 @@ import android.widget.TextView;
 
 public class SongMenu extends AppCompatActivity {
     private static String songURL;
-    private static int resid;
+    private static int originalResId;
+    private static int instrResId;
 
     public static MediaPlayer trackPlayer;
     public static MediaPlayer recordingPlayer;
@@ -41,10 +42,15 @@ public class SongMenu extends AppCompatActivity {
             "lauv", "Ed Sheeran", "DJ Snake", "Selena Gomez", "Ariana Grande",
             "Halsey", "Coldplay"};
 
-    int[] residIDS = {R.raw.adventure_of_a_lifetime, R.raw.blank_space, R.raw.chandelier,
+    int[] originalResIds = {R.raw.adventure_of_a_lifetime, R.raw.blank_space, R.raw.chandelier,
             R.raw.delicate, R.raw.dont, R.raw.fergalicious, R.raw.firework, R.raw.girls_like_you, R.raw.god_is_a_woman,
             R.raw.high_hopes, R.raw.i_like_it, R.raw.i_like_me_better, R.raw.sing, R.raw.taki_taki,
             R.raw.tell_me_something_i_dont_know, R.raw.thank_you_next, R.raw.without_me, R.raw.yellow};
+
+    int[] instrResIds = {R.raw.kt_adventure_of_a_lifetime, R.raw.kt_blank_space, R.raw.kt_chandelier,
+            R.raw.kt_delicate, R.raw.kt_dont, R.raw.kt_fergalicious, R.raw.kt_firework, R.raw.kt_girls_like_you, R.raw.kt_god_is_a_woman,
+            R.raw.kt_high_hopes, R.raw.kt_i_like_it, R.raw.kt_i_like_me_better, R.raw.kt_sing, R.raw.kt_taki_taki,
+            R.raw.kt_tell_me_something_i_dont_know, R.raw.kt_thank_you_next, R.raw.kt_without_me, R.raw.kt_yellow};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +87,8 @@ public class SongMenu extends AppCompatActivity {
                 if (trackPlayer != null) trackPlayer.reset();
                 if (recordingPlayer != null) recordingPlayer.reset();
                 songURL = "https://api.lyrics.ovh/v1/" + artists[i] + "/" + songNamesArray[i];
-                resid = residIDS[i];
+                originalResId = originalResIds[i];
+                instrResId = instrResIds[i];
                 Intent intent = new Intent(context, MainActivity.class);
                 startActivity(intent);
             }
@@ -98,8 +105,12 @@ public class SongMenu extends AppCompatActivity {
 //        return recordingPlayer;
 //    }
 
-    public static int getResid() {
-        return resid;
+    public static int getOriginalResId() {
+        return originalResId;
+    }
+
+    public static int getInstrResId() {
+        return instrResId;
     }
 
     public static String getURL() {

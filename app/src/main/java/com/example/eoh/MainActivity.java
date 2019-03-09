@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private static RequestQueue requestQueue;
     private int numRequests = 0;
 
+    private int numRecordings;
+
    // private MediaPlayer karaokeTrackPlayer;
   //  private MediaPlayer recordingPlayer;
 
@@ -70,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         recordButton = findViewById(R.id.record);
 
         stopButton.setEnabled(false);
-        playButton.setEnabled(false);
 
         askAllPermissions();
 
@@ -82,17 +83,21 @@ public class MainActivity extends AppCompatActivity {
         lyricsTextView = findViewById(R.id.lyricTextView);
         startLyricsApiCall();
 
+        numRecordings = 0;
+
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 audioRecorderSetUp();
-                karaokeTrackSetUp(.5f, .5f);
+                karaokeTrackSetUp(.4f, .4f, SongMenu.getInstrResId());
 
                 try {
                     myAudioRecorder.prepare();
                     myAudioRecorder.start();
                     isRecording = true;
+                    numRecordings++;
+
                 } catch (IllegalStateException ise) {
                     Toast.makeText(getApplicationContext(),
                             "Recording Failed: IllegalStateException ise",
@@ -152,23 +157,29 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     isRecording = false;
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run(){
-                            karaokeTrackSetUp(.4f, .4f);
-                        }
-                    }, 2 * 1000);
+                    if (numRecordings > 0) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                karaokeTrackSetUp(.3f, .3f, SongMenu.getInstrResId());
+                            }
+                        }, 508);
 
 
-                    SongMenu.recordingPlayer = new MediaPlayer();
-                    SongMenu.recordingPlayer.setDataSource(outputFile);
-                    SongMenu.recordingPlayer.prepare();
-                    SongMenu.recordingPlayer.start();
+                        SongMenu.recordingPlayer = new MediaPlayer();
+                        SongMenu.recordingPlayer.setDataSource(outputFile);
+                        SongMenu.recordingPlayer.prepare();
+                        SongMenu.recordingPlayer.start();
 
-                    circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
-                            R.color.colorAccent));
-                    circleBarVisualizerRecord.setPlayer(SongMenu.recordingPlayer.getAudioSessionId());
 
+                        circleBarVisualizerRecord.setColor(ContextCompat.getColor(MainActivity.this,
+                                R.color.colorAccent));
+                        circleBarVisualizerRecord.setPlayer(SongMenu.recordingPlayer.getAudioSessionId());
+
+                    } else {
+                        karaokeTrackSetUp(.4f, .4f, SongMenu.getOriginalResId());
+                    }
+                    
                     playButton.setEnabled(false);
                     recordButton.setEnabled(true);
                     stopButton.setEnabled(true);
@@ -298,8 +309,8 @@ public class MainActivity extends AppCompatActivity {
         myAudioRecorder.setOutputFile(outputFile);
     }
 
-    private void karaokeTrackSetUp(float leftVolume, float rightVolume) {
-        SongMenu.trackPlayer = MediaPlayer.create(MainActivity.this, SongMenu.getResid());
+    private void karaokeTrackSetUp(float leftVolume, float rightVolume, int resId) {
+        SongMenu.trackPlayer = MediaPlayer.create(MainActivity.this, resId);
         SongMenu.trackPlayer.setVolume(leftVolume, rightVolume);
         SongMenu.trackPlayer.start();
 
